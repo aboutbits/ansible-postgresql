@@ -71,7 +71,7 @@
 - name: Setup PostgreSQL backup cron configuration
   ansible.builtin.template:
     src: templates/backup.sh.j2
-    dest: /home/postgres/backup.sh
+    dest: "{{ postgresql_backup.directory }}/backup.sh"
     owner: postgres
     group: postgres
     mode: 0750
