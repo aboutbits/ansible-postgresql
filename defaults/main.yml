@@ -1,0 +1,7 @@
+---
+postgresql_backup:
+  enabled: false
+  directory: ''
+postgresql_users: []
+postgresql_databases: []
+postgresql_permissions: []

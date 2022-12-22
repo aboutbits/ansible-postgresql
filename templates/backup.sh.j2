@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -euo pipefail
+
+pg_dumpall -f {{ postgresql_backup.directory }}/$(date +%A).sql

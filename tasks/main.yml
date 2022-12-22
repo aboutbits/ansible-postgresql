@@ -1,0 +1,78 @@
+---
+- name: Install PostgreSQL
+  ansible.builtin.apt:
+    name: '{{ item }}'
+    state: latest
+  loop:
+    - "postgresql"
+    - "postgresql-contrib"
+    - "python3-psycopg2"
+
+- name: Set a password for the postgres user
+  community.postgresql.postgresql_query:
+    db: postgres
+    query: "ALTER ROLE postgres password '{{ postgresql_postgres_password }}'"
+  become: true
+  become_user: postgres
+
+- name: Create users
+  community.postgresql.postgresql_user:
+    name: "{{ item['name'] }}"
+    password: "{{ item['password'] }}"
+  loop: '{{ postgresql_users }}'
+  become: true
+  become_user: postgres
+
+- name: Create databases
+  community.postgresql.postgresql_db:
+    name: "{{ item['name'] }}"
+  loop: '{{ postgresql_databases }}'
+  become: true
+  become_user: postgres
+
+- name: Create schemas
+  community.postgresql.postgresql_schema:
+    db: "{{ item['name'] }}"
+    name: "{{ item['schema'] }}"
+    owner: "{{ item['owner'] }}"
+  loop: '{{ postgresql_databases }}'
+  become: true
+  become_user: postgres
+
+- name: Grant permissions
+  community.postgresql.postgresql_privs:
+    db: "{{ item['database'] }}"
+    schema: "{{ item['schema'] }}"
+    objs: ALL_IN_SCHEMA
+    privs: "{{ item['privileges'] }}"
+    role: "{{ item['user'] }}"
+  loop: '{{ postgresql_permissions }}'
+  become: true
+  become_user: postgres
+
+- name: Setup PostgreSQL backup folder
+  ansible.builtin.file:
+    dest: "{{ postgresql_backup.directory }}"
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: 0750
+  when: postgresql_backup.enabled
+
+- name: Setup PostgreSQL backup script
+  ansible.builtin.copy:
+    src: files/postgres
+    dest: /etc/cron.d/postgres
+    owner: root
+    group: root
+    mode: 0644
+  when: postgresql_backup.enabled
+
+- name: Setup PostgreSQL backup cron configuration
+  ansible.builtin.template:
+    src: templates/backup.sh.j2
+    dest: /home/postgres/backup.sh
+    owner: postgres
+    group: postgres
+    mode: 0750
+  when: postgresql_backup.enabled
