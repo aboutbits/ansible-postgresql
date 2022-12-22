@@ -4,4 +4,5 @@ postgresql_backup:
   directory: ''
 postgresql_users: []
 postgresql_databases: []
-postgresql_permissions: []
+postgresql_database_permissions: []
+postgresql_schema_permissions: []

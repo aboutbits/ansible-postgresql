@@ -8,7 +8,8 @@ PostgreSQL installation role.
 - `postgresql_backup`: All information related to backups and if they should be enabled or not
 - `postgresql_users`: A list of users that should be created.
 - `postgresql_databases`: A list of databases including the schemas that should be created.
-- `postgresql_permissions`: A list of permissions that should be granted to different users to different databases.
+- `postgresql_database_permissions`: A list of permissions that should be granted to different users to different databases.
+- `postgresql_schema_permissions`: A list of permissions that should be granted to different users to different database schemas.
 
 ## Example Playbook
 
@@ -26,10 +27,14 @@ PostgreSQL installation role.
           - name: acme-product
             schema: app
             owner: acme-user
-        postgresql_permissions:
+        postgresql_database_permissions:
           - database: acme-product
             user: acme-user
+            privileges: CREATE
+        postgresql_schema_permissions:
+          - database: acme-product
             schema: app
+            user: acme-user
             privileges: ALL
         postgresql_backup:
           enabled: true
