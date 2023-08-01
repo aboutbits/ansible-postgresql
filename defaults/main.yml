@@ -2,6 +2,7 @@
 postgresql_backup:
   enabled: false
   directory: ''
+  cron: '30 03 * * *'
 postgresql_users: []
 postgresql_databases: []
 postgresql_database_permissions: []
