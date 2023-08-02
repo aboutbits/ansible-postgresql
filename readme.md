@@ -38,6 +38,7 @@ PostgreSQL installation role.
             privileges: ALL
         postgresql_backup:
           enabled: true
+          cron: 30 03 * * *
           directory: /usr/local/share/postgres
 ```
 

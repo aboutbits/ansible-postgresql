@@ -70,9 +70,9 @@
   when: postgresql_backup.enabled
 
 - name: Setup PostgreSQL backup script
-  ansible.builtin.copy:
-    src: files/postgres
-    dest: /etc/cron.d/postgres
+  ansible.builtin.template:
+    src: templates/postgres.j2
+    dest: /etc/cron.d/postgres-backup
     owner: root
     group: root
     mode: 0644
