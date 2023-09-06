@@ -44,7 +44,7 @@
     type: database
     db: "{{ item['database'] }}"
     role: "{{ item['user'] }}"
-    privs: "{{ item['permissions'] == 'READ' if 'CREATE' else 'CONNECT' }}"
+    privs: "{{ database_privileges[item['permissions'] | upper] }}"
   loop: '{{ postgresql_privileges }}'
   become: true
   become_user: postgres
@@ -55,7 +55,7 @@
     db: "{{ item['database'] }}"
     objs: "{{ item['schema'] }}"
     role: "{{ item['user'] }}"
-    privs: "{{ item['permissions'] == 'READ' if 'USAGE' else 'ALL' }}"
+    privs: "{{ schema_privileges[item['permissions'] | upper ] }}"
   loop: '{{ postgresql_privileges }}'
   become: true
   become_user: postgres
@@ -66,8 +66,9 @@
     db: "{{ item['database'] }}"
     schema: "{{ item['schema'] }}"
     objs: "TABLES,SEQUENCES"
-    privs: "{{ item['permissions'] == 'READ' if 'SELECT' else 'ALL' }}"
+    privs: "{{ default_privileges[item['permissions'] | upper] }}"
     role: "{{ item['user'] }}"
+    target_roles: "{{ item['owner'] }}"
   loop: '{{ postgresql_default_privileges }}'
   become: true
   become_user: postgres

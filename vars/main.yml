@@ -1,0 +1,11 @@
+database_privileges:
+  READ: CONNECT
+  WRITE: CREATE
+
+schema_privileges:
+  READ: USAGE
+  WRITE: ALL
+
+default_privileges:
+  READ: SELECT
+  WRITE: ALL
