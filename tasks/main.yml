@@ -39,24 +39,37 @@
   become: true
   become_user: postgres
 
-- name: Grant database permissions
+- name: Grant database privileges
   community.postgresql.postgresql_privs:
     type: database
     db: "{{ item['database'] }}"
-    privs: "{{ item['privileges'] }}"
     role: "{{ item['user'] }}"
-  loop: '{{ postgresql_database_permissions }}'
+    privs: "{{ database_privileges[item['permissions'] | upper] }}"
+  loop: '{{ postgresql_privileges }}'
   become: true
   become_user: postgres
 
-- name: Grant schema permissions
+- name: Grant schema privileges
   community.postgresql.postgresql_privs:
     type: schema
     db: "{{ item['database'] }}"
     objs: "{{ item['schema'] }}"
-    privs: "{{ item['privileges'] }}"
     role: "{{ item['user'] }}"
-  loop: '{{ postgresql_schema_permissions }}'
+    privs: "{{ schema_privileges[item['permissions'] | upper ] }}"
+  loop: '{{ postgresql_privileges }}'
+  become: true
+  become_user: postgres
+
+- name: Grant default privileges
+  community.postgresql.postgresql_privs:
+    type: "default_privs"
+    db: "{{ item['database'] }}"
+    schema: "{{ item['schema'] }}"
+    objs: "TABLES,SEQUENCES"
+    privs: "{{ default_privileges[item['permissions'] | upper] }}"
+    role: "{{ item['user'] }}"
+    target_roles: "{{ item['owner'] }}"
+  loop: '{{ postgresql_default_privileges }}'
   become: true
   become_user: postgres
 
