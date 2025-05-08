@@ -51,7 +51,7 @@ PostgreSQL installation role.
 
 ## Versioning
 
-In order to have a versioning in place and working, create leightweight tags that point to the appropriate minor release versions.
+In order to have a versioning in place and working, create lightweight tags that point to the appropriate minor release versions.
 
 Creating a new minor release:
 
